@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: tlias
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+  data:
+    redis:
+      host:
+      port: 6379
+      database: 0
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  autoconfigure:
+    exclude:
+      - dev.langchain4j.community.store.embedding.redis.spring.RedisEmbeddingStoreAutoConfiguration
+
+
+# LangChain4j 配置
+langchain4j:
+  # open-ai:
+  #   chat-model:
+  #     api-key: ${OPENAI_API_KEY}
+  #     model-name: gpt-3.5-turbo
+  #     temperature: 0.7
+  #   streaming-chat-model:
+  #     api-key: ${OPENAI_API_KEY}
+  #     model-name: gpt-3.5-turbo
+  #     temperature: 0.7
+  open-ai:
+    chat-model:
+      base-url: https://api.gpt.ge/v1/
+      api-key:
+      model-name: gpt-3.5-turbo
+#      strict-json-schema: true
+#      response-format: json_object
+      max-tokens: 4096
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://api.gpt.ge/v1/
+      api-key:
+      model-name: gpt-3.5-turbo
+      max-tokens: 4096
+      log-requests: true
+      log-responses: true
+  redis:
+    prefix: ":chat_memory_"  # 存储聊天记录的键前缀（避免与其他Redis数据冲突）
+    ttl: 3600  # 聊天记录过期时间（秒），7天=60*60*24*7
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+server:
+  port: 8123
+  servlet:
+    session:
+      timeout: 1800s # 30分钟
+    context-path: /api
+#spring事务开关
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+    org.springframework.security: DEBUG
+cos:
+  client:
+    host:
+    secretId:
+    secretKey:
+    region:
+    bucket:
