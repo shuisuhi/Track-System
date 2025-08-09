@@ -1,0 +1,203 @@
+/* 全局样式 */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  background-color: #F5F5DC; /* 浅米色背景 */
+  color: #333;
+  background-image: url('./background-pattern.svg'); /* 户外纹理背景 */
+  background-size: 100px 100px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8B4513; /* 棕色 */
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2E8B57; /* 深绿色 */
+}
+
+/* 按钮样式 */
+.el-button {
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-button--primary {
+  background-color: #2E8B57; /* 深绿色 */
+  border-color: #2E8B57;
+}
+
+.el-button--primary:hover {
+  background-color: #228B22; /* 稍微浅一点的绿色 */
+  border-color: #228B22;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.el-button--danger {
+  background-color: #8B4513; /* 棕色 */
+  border-color: #8B4513;
+}
+
+.el-button--danger:hover {
+  background-color: #A0522D; /* 稍微浅一点的棕色 */
+  border-color: #A0522D;
+}
+
+/* 输入框样式 */
+.el-input__inner {
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+.el-input__inner:focus {
+  border-color: #2E8B57;
+  box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.2);
+}
+
+.el-textarea__inner {
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.el-textarea__inner:focus {
+  border-color: #2E8B57;
+  box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.2);
+}
+
+/* 卡片样式 */
+.el-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 对话框样式 */
+.el-dialog {
+  border-radius: 12px;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid #eee;
+}
+
+.el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+
+/* 标签页样式 */
+.el-tabs__item {
+  font-size: 16px;
+}
+
+/* 户外主题卡片样式 */
+.outdoor-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.outdoor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 户外主题按钮 */
+.outdoor-button {
+  background-color: #2E8B57;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.outdoor-button:hover {
+  background-color: #228B22;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 户外主题标题 */
+.outdoor-title {
+  color: #2E8B57;
+  font-weight: 600;
+  border-bottom: 2px solid #2E8B57;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+  
+  .content-wrapper {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    order: 2;
+  }
+  
+  .main-content {
+    max-width: 100%;
+    order: 1;
+  }
+  
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-stats {
+    gap: 15px;
+  }
+  
+  .post-actions-bar {
+    gap: 15px;
+  }
+  
+  body {
+    background-image: none;
+  }
+}
