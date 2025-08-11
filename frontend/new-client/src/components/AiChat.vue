@@ -1,7 +1,7 @@
 <template>
   <div class="ai-chat-container">
     <div class="chat-header">
-      <h2>徒步专家AI助手</h2>
+      <h2>多Agent AI助手</h2>
       <el-button type="primary" @click="goBack">返回</el-button>
     </div>
     
@@ -25,14 +25,14 @@
             />
           </div>
           <div class="text">
-            <div class="username">{{ message.type === 'user' ? '我' : '徒步专家' }}</div>
+            <div class="username">{{ message.type === 'user' ? '我' : 'AI助手' }}</div>
             <div class="content">
               <div v-if="message.type === 'ai' && message.isLoading" class="loading-dots">
                 <span></span>
                 <span></span>
                 <span></span>
               </div>
-              <div v-else>{{ message.content }}</div>
+              <div v-else v-html="marked(message.content)"></div>
             </div>
           </div>
         </div>
@@ -64,6 +64,7 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { marked } from 'marked'
 
 export default {
   name: 'AiChat',
@@ -81,6 +82,53 @@ export default {
     // 生成消息ID
     const generateMessageId = () => {
       return messageId++
+    }
+    
+    // 格式化AI响应
+    const formatAiResponse = (response) => {
+      // 检查响应是否为字符串
+      if (typeof response === 'string') {
+        try {
+          // 尝试解析JSON
+          const parsed = JSON.parse(response);
+          // 检查是否为结构化响应
+          if (parsed.summary && parsed.responses) {
+            // 格式化结构化响应
+            let formatted = `## ${parsed.summary}\n\n`;
+            for (const [agent, content] of Object.entries(parsed.responses)) {
+              // 移除"Agent"后缀（如果存在）
+              const cleanAgentName = agent.replace(/Agent$/, '');
+              formatted += `### ${cleanAgentName}\n\n${content}\n\n`;
+            }
+            return formatted;
+          } else {
+            // 如果不是结构化响应，直接返回原字符串
+            return response;
+          }
+        } catch (e) {
+          // 如果解析失败，直接返回原字符串
+          return response;
+        }
+      }
+      // 如果不是字符串，检查是否为对象
+      else if (typeof response === 'object' && response !== null) {
+        // 检查是否为结构化响应
+        if (response.summary && response.responses) {
+          // 格式化结构化响应
+          let formatted = `## ${response.summary}\n\n`;
+          for (const [agent, content] of Object.entries(response.responses)) {
+            // 移除"Agent"后缀（如果存在）
+            const cleanAgentName = agent.replace(/Agent$/, '');
+            formatted += `### ${cleanAgentName}\n\n${content}\n\n`;
+          }
+          return formatted;
+        } else {
+          // 如果不是结构化响应，转换为字符串
+          return JSON.stringify(response, null, 2);
+        }
+      }
+      // 如果不是字符串也不是对象，转换为字符串
+      return String(response);
     }
     
     // 发送消息
@@ -121,10 +169,11 @@ export default {
         const token = localStorage.getItem('token')
         
         // 构造请求URL
-        const baseUrl = `http://localhost:8123/api/ai/chat`
+        const baseUrl = `http://localhost:8123/api/multi-agent/chat`
         const params = new URLSearchParams({
           message: userMessageContent,
-          userId: userId
+          userId: userId,
+          agentType: "orchestrator"
         })
         const url = `${baseUrl}?${params.toString()}`
         
@@ -141,7 +190,7 @@ export default {
           .then(data => {
             console.log('收到AI响应:', data)
             // 更新AI消息内容
-            aiMessage.content = data.data || data
+            aiMessage.content = formatAiResponse(data.data || data)
             aiMessage.isLoading = false
             // 滚动到最新消息
             scrollToBottom()
@@ -191,7 +240,7 @@ export default {
       messages.value.push({
         id: generateMessageId(),
         type: 'ai',
-        content: '您好！我是徒步专家AI助手，很高兴为您服务。请问您想了解关于徒步旅行的哪些方面呢？'
+        content: '您好！我是多Agent AI助手，很高兴为您服务。请问您想了解关于徒步旅行的哪些方面呢？'
       })
     })
     
@@ -201,7 +250,8 @@ export default {
       isSending,
       messagesContainer,
       sendMessage,
-      goBack
+      goBack,
+      marked
     }
   }
 }
@@ -209,7 +259,8 @@ export default {
 
 <style scoped>
 .ai-chat-container {
-  max-width: 800px;
+  width: 80%;
+  max-width: none;
   height: 100vh;
   margin: 0 auto;
   display: flex;
@@ -343,6 +394,7 @@ export default {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .ai-chat-container {
+    width: 100%;
     max-width: 100%;
   }
   
