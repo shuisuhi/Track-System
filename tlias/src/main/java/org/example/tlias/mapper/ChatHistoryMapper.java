@@ -19,8 +19,8 @@ public interface ChatHistoryMapper {
      * @param chatHistory 对话历史记录
      * @return 是否成功
      */
-    @Insert("INSERT INTO chat_history (message, message_type, user_id, create_time, update_time) " +
-            "VALUES (#{message}, #{messageType}, #{userId}, #{createTime}, #{updateTime})")
+    @Insert("INSERT INTO chat_history (message, message_type, user_id, agent_type, create_time, update_time) " +
+            "VALUES (#{message}, #{messageType}, #{userId}, #{agentType}, #{createTime}, #{updateTime})")
     int insert(ChatHistory chatHistory);
 
     /**
@@ -31,4 +31,14 @@ public interface ChatHistoryMapper {
      */
     @Select("SELECT * FROM chat_history WHERE user_id = #{userId} ORDER BY create_time ASC")
     List<ChatHistory> selectByUserId(Long userId);
+
+    /**
+     * 根据用户 ID 和 Agent 类型查询对话历史
+     *
+     * @param userId 用户 ID
+     * @param agentType Agent 类型
+     * @return 对话历史列表
+     */
+    @Select("SELECT * FROM chat_history WHERE user_id = #{userId} AND agent_type = #{agentType} ORDER BY create_time ASC")
+    List<ChatHistory> selectByUserIdAndAgentType(Long userId, String agentType);
 }

@@ -21,6 +21,11 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
 
     @Override
     public boolean addChatMessage(String message, String messageType, Long userId) {
+        return addChatMessage(message, messageType, userId, "default");
+    }
+
+    @Override
+    public boolean addChatMessage(String message, String messageType, Long userId, String agentType) {
         // 基础校验
         if (message == null || message.isEmpty()) {
             return false;
@@ -30,6 +35,9 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
         }
         if (userId == null || userId <= 0) {
             return false;
+        }
+        if (agentType == null || agentType.isEmpty()) {
+            agentType = "default"; // 默认Agent类型
         }
         // 验证消息类型是否有效
         ChatHistoryMessageTypeEnum messageTypeEnum = ChatHistoryMessageTypeEnum.getEnumByValue(messageType);
@@ -41,6 +49,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
                 .message(message)
                 .messageType(messageType)
                 .userId(userId)
+                .agentType(agentType)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .build();
@@ -53,5 +62,16 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
             return List.of();
         }
         return chatHistoryMapper.selectByUserId(userId);
+    }
+
+    @Override
+    public List<ChatHistory> listChatHistoryByUserIdAndAgentType(Long userId, String agentType) {
+        if (userId == null || userId <= 0) {
+            return List.of();
+        }
+        if (agentType == null || agentType.isEmpty()) {
+            agentType = "default"; // 默认Agent类型
+        }
+        return chatHistoryMapper.selectByUserIdAndAgentType(userId, agentType);
     }
 }

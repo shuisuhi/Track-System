@@ -40,6 +40,11 @@ public class ChatHistory implements Serializable {
     private Long userId;
 
     /**
+     * Agent类型
+     */
+    private String agentType;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

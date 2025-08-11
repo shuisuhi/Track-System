@@ -32,9 +32,22 @@ public class AiController {
      */
     @GetMapping(value = "/chat", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> chat(@RequestParam String message, @RequestParam Long userId) {
+        return chat(message, userId, "default");
+    }
+
+    /**
+     * 与 AI 进行对话（返回完整响应，支持Agent类型）
+     *
+     * @param message    用户消息
+     * @param userId     用户 ID
+     * @param agentType  Agent类型
+     * @return 完整的 AI 响应
+     */
+    @GetMapping(value = "/chat-with-agent", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<String> chat(@RequestParam String message, @RequestParam Long userId, @RequestParam String agentType) {
         try {
             // 保存用户消息到数据库
-            chatHistoryService.addChatMessage(message, "user", userId);
+            chatHistoryService.addChatMessage(message, "user", userId, agentType);
 
             // 获取 AI 服务实例
             AiService aiService = aiServiceFactory.createAiService(userId);
@@ -55,7 +68,7 @@ public class AiController {
                         // 保存 AI 响应到数据库
                         String aiResponse = aiResponseBuilder.toString();
                         if (!aiResponse.isEmpty()) {
-                            chatHistoryService.addChatMessage(aiResponse, "ai", userId);
+                            chatHistoryService.addChatMessage(aiResponse, "ai", userId, agentType);
                         }
                     })
                     .then(Mono.fromCallable(() -> {

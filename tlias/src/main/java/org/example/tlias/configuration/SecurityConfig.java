@@ -46,6 +46,9 @@ public class SecurityConfig {
                         .requestMatchers("/*/send-verification-code").permitAll()
                         .requestMatchers("/*/verify-code").permitAll()
                         .requestMatchers("/ai/chat").permitAll() // 豁免AI聊天接口的认证
+                        .requestMatchers("/ai/chat-with-agent").permitAll() // 豁免AI聊天接口的认证
+                        .requestMatchers("/multi-agent/chat").permitAll() // 豁免多Agent聊天接口的认证
+                        .requestMatchers("/multi-agent/chat-with-agent").permitAll() // 豁免多Agent聊天接口的认证
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN","ASSESSOR")
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/admin/mute/**").hasAuthority("CAN_MUTE_USERS")
